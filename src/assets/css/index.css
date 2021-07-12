@@ -1,0 +1,9 @@
+@import url("./../fonts/style.css");
+
+body {
+  margin: 0;
+  padding: 0 !important;
+  font-family: 'Avenir Next LT Pro Regular', Sans-serif !important;
+  overflow: hidden !important;
+  height: 100vh;
+}

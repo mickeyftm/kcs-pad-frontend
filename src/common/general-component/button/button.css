@@ -1,0 +1,31 @@
+.simple-button{
+    min-height: 6vh;
+    min-width: 10vw;
+    box-shadow: 0 1.5px 3px 0 rgba(0, 0, 0, 0.16) !important;
+    border: solid 0.5px #DEDEDE !important;
+    border-radius: 7px;
+    background-color: #fff !important;
+    height: 90%;
+  }
+
+  .simple-button span{
+    font-size: 1rem !important;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.75vh;
+    letter-spacing: normal;
+    text-align: center;
+    color: black;
+  }
+
+  .simple-button i{
+    font-size: 1.7vh;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.14;
+    letter-spacing: normal;
+    text-align: center;
+    color: black;
+  }

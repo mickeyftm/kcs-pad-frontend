@@ -1,0 +1,35 @@
+.manage-transaction-name {
+    font-family: 'Avenir Next LT Pro Regular', Sans-serif !important;
+    font-size: 1.5vw;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.67;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000000;
+}
+
+.header-account-info-container {
+    height: 80px;
+    display: table;
+}
+
+.header-account-info {
+    display: table-cell;
+    vertical-align: middle;
+    padding-bottom: 15px;
+}
+
+.account-customer-id {
+    font-size: 0.8vw;
+}
+
+.account-info-detail-header {
+    font-size: 0.8vw;
+}
+
+.account-info-detail-value {
+    font-size: 1vw;
+    font-weight: 900;
+}
