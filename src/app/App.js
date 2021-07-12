@@ -1,23 +1,31 @@
-import logo from "./logo.svg";
-
+import React from "react";
+import Loadable from "react-loadable";
+import { Provider as ReduxProvider } from "react-redux";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "antd/dist/antd.css";
+import createLaunchpadPage from "./create-launchpad/create-launchpad-page";
+import { ROUTES } from "../common/constants/routes";
+import reducer from "./../common/store/index";
+const CreateLaunchpadPage = Loadable({
+  loader: () =>
+    import(
+      /*webpackChunkName: GetStarted */ "./create-launchpad/create-launchpad-page"
+    ),
+  loading: createLaunchpadPage,
+});
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ReduxProvider store={reducer}>
+      <Router>
+        <Switch>
+          <Route
+            exact
+            path={ROUTES.createLaunchpad}
+            component={CreateLaunchpadPage}
+          />
+        </Switch>
+      </Router>
+    </ReduxProvider>
   );
 }
 
