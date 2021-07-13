@@ -1,3 +1,5 @@
 export const ROUTES = {
-  createLaunchpad: "/",
+  createLaunchpad: "/create-launchpad",
+  launchpads: "/launchpads",
+  createToken: "/create-token",
 };

@@ -1,0 +1,90 @@
+.create-launchpad-form-layout {
+  position: relative;
+  left: 2%;
+  margin-top: 24px;
+  padding-top: 30px;
+  padding-left: 18px;
+  border-radius: 8px;
+  margin-right: 5%;
+}
+
+.form-steps {
+  padding-left: 12%;
+  padding-right: 15%;
+  padding-top: 15px;
+  padding-bottom: 20px;
+}
+
+.steptxt-pending {
+  /* font-family: SFProText; */
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 700;
+  letter-spacing: 0.0920856px;
+  color: #b4b5cb;
+  padding-top: 4px;
+  text-align: center;
+}
+
+.steptxt-completed {
+  /* font-family: SFProText; */
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+  letter-spacing: 0.0920856px;
+  color: #000000;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.bg-clr-blue {
+  background-color: #1739a4 !important;
+}
+
+.input-label {
+  /* font-family: SFProText; */
+  font-size: 15px;
+  line-height: 14px;
+  font-weight: 500;
+  padding-left: 5px;
+  letter-spacing: 0.0920856px;
+  color: #4e587a;
+  padding-top: 4px;
+  padding-bottom: 6px;
+}
+
+.input-label-sub-head {
+  /* font-family: SFProText; */
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: 0.0920856px;
+  color: #b4b5cb;
+  padding-top: 6px;
+}
+
+.input-style {
+  height: 60px !important;
+  background: #f5f6fa !important;
+  border-radius: 5.5px;
+  font-weight: 600;
+  border-color: #f5f6fa;
+}
+.gather-steps-content {
+  width: 60%;
+  margin: auto;
+}
+
+.from-step-line {
+  width: 150px;
+  margin-top: 15px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+@media (max-width: 700px) {
+  .form-steps {
+    padding-left: 5%;
+    padding-right: 10%;
+  }
+}

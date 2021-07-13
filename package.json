@@ -19,6 +19,7 @@
     "antd": "^4.5.4",
     "autoprefixer": "^9.8.6",
     "axios": "^0.20.0",
+    "django-react-csrftoken": "^1.0.4",
     "ethers": "^5.1.4",
     "identicon.js": "^2.3.3",
     "lodash.find": "^4.6.0",

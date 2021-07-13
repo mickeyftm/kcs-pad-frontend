@@ -10,6 +10,8 @@ import {
   MenuAlt2Icon,
   FolderAddIcon,
   XIcon,
+  ViewListIcon,
+  ScaleIcon,
 } from "@heroicons/react/outline";
 import { SearchIcon } from "@heroicons/react/solid";
 import propelLogo from "../../assets/kcs-logo.png";
@@ -26,26 +28,32 @@ function classNames(...classes) {
 
 export default function LaunchpadLayout({ Container, activeTab, pageHead }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const currentTab = window.location.pathname;
+  console.log(currentTab);
   const navigation = [
     {
-      name: "Factory",
-      href: ROUTES.factory,
-      icon: HomeIcon,
-      current: activeTab === "factory",
+      name: "Create Launchpads",
+      href: ROUTES.createLaunchpad,
+      icon: FolderAddIcon,
+      current: ROUTES.createLaunchpad === currentTab,
     },
-    //   { name: 'Factory', href: '#', icon: UsersIcon, current: false },
+    {
+      name: "Create Token",
+      href: ROUTES.createToken,
+      icon: ScaleIcon,
+      current: ROUTES.createToken === currentTab,
+    },
     {
       name: "Launchpads",
       href: ROUTES.launchpads,
-      icon: FolderIcon,
-      current: activeTab === "launchpads",
+      icon: ViewListIcon,
+      current: ROUTES.launchpads === currentTab,
     },
     {
-      name: "Propel Pool",
+      name: "Leaderboard",
       href: ROUTES.adminPropelPool,
-      icon: FolderAddIcon,
-      current: activeTab === "propel-pool",
+      icon: InboxIcon,
+      current: activeTab === "test",
     },
     {
       name: "Sale",
@@ -53,9 +61,9 @@ export default function LaunchpadLayout({ Container, activeTab, pageHead }) {
       icon: ChartBarIcon,
       current: activeTab === "sale",
     },
-    { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-    { name: "Documents", href: "#", icon: InboxIcon, current: false },
-    { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+    // { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+    // { name: "Documents", href: "#", icon: InboxIcon, current: false },
+    // { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
   ];
 
   return (

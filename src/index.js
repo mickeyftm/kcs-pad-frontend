@@ -1,11 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Favicon from "react-favicon";
+import favicon from "./assets/favicon.png";
 import App from "./app/App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
+    <Favicon url={favicon} />
     <App />
   </React.StrictMode>,
   document.getElementById("root")
