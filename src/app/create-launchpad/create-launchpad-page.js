@@ -27,66 +27,49 @@ import {
 } from "../../common/store/actions/common-action";
 import { parseCurrency } from "../../common/utils/general-utils";
 import { ethers } from "ethers";
+import { NATIVE_CURRENCY_NAME } from "../../common/constants/CONTRACT_CONSTANTS";
 class CreateLaunchpadPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentStep: 1,
+      currentStep: 3,
       formData: {},
       loader: false,
-      listScatterTokens: [
+      tokenDecimals: 0,
+      tokenSymbol: "",
+      tokenName: "",
+      invalidToken: true,
+      currency: "KCS",
+      listCurrency: [
         {
-          label: "EMT",
-          value: "EMT - 0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
-          tokenAddress: "0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
+          currency_name: "EMT",
+          currency_contract_address:
+            "0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
+          currency_decimal: 10,
         },
         {
-          label: "KCS",
-          value: "KCS -  Mainnet Native Currency",
-          tokenAddress: "0x0000000000000000000000000000000000000000",
-        },
-      ],
-      staticListScatterTokens: [
-        {
-          label: "EMT",
-          value: "EMT - 0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
-          tokenAddress: "0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
-        },
-        {
-          label: "KCS",
-          value: "KCS -  Mainnet Native Currency",
-          tokenAddress: "0x0000000000000000000000000000000000000000",
+          currency_name: "KCS",
+          currency_decimal: 18,
+          currency_contract_address:
+            "0x0000000000000000000000000000000000000000",
         },
       ],
     };
+    this.formRef = React.createRef();
   }
-  filterTokenDropdownList = (key) => {
-    const { staticListScatterTokens } = this.state;
-    if (key !== "") {
-      this.setState({
-        listScatterTokens: _.filter(staticListScatterTokens, (item) => {
-          return item.value.toLowerCase().indexOf(key) > -1;
-        }),
-      });
-    } else {
-      this.setState({
-        listScatterTokens: staticListScatterTokens,
-      });
-    }
+  onChangeCurrency = (currency, value) => {
+    this.setState({ currency: currency && currency[0] });
   };
-  // componentDidMount() {
-  //   console.log(
-  //     ethers.utils.getAddress("0x6C9a2aF2f6C8f808AE6aE89A5B3C80f2414480aa")
-  //   );
-  //   console.log(
-  //     ethers.utils.getContractAddress({
-  //       from: "0x6a510e68d25e178d2f261cd5d7e27ee060025865",
-  //       nonce: 15,
-  //     })
-  //   );
-  // }
+  setSaleTokenDetail = (tokenName, tokenSymbol, tokenDecimals) => {
+    this.setState({
+      tokenName,
+      tokenSymbol,
+      tokenDecimals,
+    });
+  };
   createLaunchpad = (formValue) => {
     let { currentStep } = this.state;
+    this.setState({ loader: true });
     if (currentStep === 0) {
       this.createLaunchpadVerifyToken(formValue);
     }
@@ -95,9 +78,7 @@ class CreateLaunchpadPage extends React.Component {
     } else {
     }
   };
-  // componentDidMount() {
-  //   this.createLaunchpadContractCall();
-  // }
+
   async createLaunchpadVerifyToken(formValue) {
     const { networkInfo, selectedAddress } = this.props.common;
     const { networkId } = networkInfo;
@@ -119,6 +100,7 @@ class CreateLaunchpadPage extends React.Component {
       this.setState({
         currentStep: 1,
         formData: merge,
+        loader: false,
       });
     } else {
       const totalSupply = await erc20Contract.totalSupply();
@@ -128,6 +110,7 @@ class CreateLaunchpadPage extends React.Component {
           this.setState({
             currentStep: 1,
             formData: merge,
+            loader: false,
           });
           successNotification(
             "Create Launchpad",
@@ -135,13 +118,16 @@ class CreateLaunchpadPage extends React.Component {
           );
         },
         (error) => {
+          this.setState({
+            loader: false,
+          });
           errorNotification("Create Launchpad", error.message);
         }
       );
     }
   }
   async createLaunchpadContractCall(formValue) {
-    const { config, selectedAddress, networkInfo } = this.props.common;
+    const { networkInfo } = this.props.common;
     let { formData } = this.state;
     const { errorNotification, successNotification } = this.props;
 
@@ -158,19 +144,10 @@ class CreateLaunchpadPage extends React.Component {
       networkId,
     });
     let identifier = Date.now();
-    const currencyTokenERC20Contract = getERC20TokenContract(
-      // mergedFormValue.currencyTokenAddress,
-      "0xAad328600d28Ba540b75066d697A0F4eD152F0eE",
-      {
-        walletConnector,
-        isReadOnly: true,
-        networkId,
-      }
-    );
-    const currencyTokenDecimals = await currencyTokenERC20Contract.decimals();
+    const currencyTokenDecimals = mergedFormValue.currencyTokenAddress[2];
     // const { saleTokenDecimal } = mergedFormValue;
-    console.log(currencyTokenDecimals);
-    const saleTokenDecimal = 18;
+    const saleTokenDecimal = mergedFormValue.tokenDecimals;
+    console.log(saleTokenDecimal);
     const softCap = parseCurrency(mergedFormValue.softCap, saleTokenDecimal);
     const hardCap = parseCurrency(mergedFormValue.hardCap, saleTokenDecimal);
     const minPurchaseLimit = parseCurrency(
@@ -191,7 +168,7 @@ class CreateLaunchpadPage extends React.Component {
       identifier,
       [
         mergedFormValue.saleTokenAddress,
-        "0xAad328600d28Ba540b75066d697A0F4eD152F0eE",
+        mergedFormValue.currencyTokenAddress[1],
       ],
       [softCap, hardCap],
       [minPurchaseLimit, maxPurchaseLimit],
@@ -213,6 +190,7 @@ class CreateLaunchpadPage extends React.Component {
         }
       },
       (error) => {
+        this.setState({ loader: false });
         errorNotification("Create Launchpad", error.message);
       }
     );
@@ -225,8 +203,16 @@ class CreateLaunchpadPage extends React.Component {
     const { networkId } = networkInfo;
 
     const walletConnector = localStorage.getItem("walletConnector");
-
-    const { loader, currentStep, listScatterTokens } = this.state;
+    const {
+      loader,
+      currentStep,
+      listCurrency,
+      tokenSymbol,
+      tokenDecimals,
+      tokenName,
+      invalidToken,
+      currency,
+    } = this.state;
     return (
       <>
         <LaunchpadLayout
@@ -234,13 +220,23 @@ class CreateLaunchpadPage extends React.Component {
           Container={
             <Spin spinning={loader}>
               <CreateLaunchpadComponents
-                filterTokenDropdownList={this.filterTokenDropdownList}
                 createLaunchpad={this.createLaunchpad}
                 goToStep={this.goToStep}
                 currentStep={currentStep}
-                listScatterTokens={listScatterTokens}
+                currency={currency}
+                listCurrency={listCurrency}
                 walletConnector={walletConnector}
                 networkId={networkId}
+                tokenDecimals={tokenDecimals}
+                tokenSymbol={tokenSymbol}
+                tokenName={tokenName}
+                invalidToken={invalidToken}
+                onChangeCurrency={this.onChangeCurrency}
+                setSaleTokenDetail={this.setSaleTokenDetail}
+                // changeSaleTokenInvalidState={this.changeSaleTokenInvalidState}
+                getSaleTokenAddressDetails={(saleTokenAddress) =>
+                  this.getSaleTokenAddressDetails(saleTokenAddress)
+                }
               />
             </Spin>
           }

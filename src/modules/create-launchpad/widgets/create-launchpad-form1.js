@@ -1,22 +1,20 @@
-import { Col, Form, Input, Row } from "antd";
+import { Col, Form, Input, Row, Spin } from "antd";
 import React from "react";
 import { getChecksumAddress } from "../../../common/utils/contracts/common-contract-utils";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default class CreateLaunchpadForm1 extends React.Component {
   render() {
     const {
       tokenSymbol,
-      decimals,
+      tokenDecimals,
       tokenName,
-      invalidToken,
       getSaleTokenAddressDetails,
-      changeSaleTokenInvalidState,
+      loadTokenDetail,
     } = this.props;
     return (
       <>
         <Col>
-          <br />
-          <br />
           <div>
             <div className="input-label">
               Token address*
@@ -32,10 +30,7 @@ export default class CreateLaunchpadForm1 extends React.Component {
                 ({ getFieldValue }) => ({
                   validator(rule, value = "") {
                     if (value && !getChecksumAddress(value)) {
-                      changeSaleTokenInvalidState();
                       return Promise.reject(`Invalid sale token address!`);
-                      // } else if (value && getSaleTokenAddressDetails(value)) {
-                      //   return Promise.reject(`Unable to get token details!`);
                     } else {
                       getSaleTokenAddressDetails(value);
                       return Promise.resolve();
@@ -44,22 +39,20 @@ export default class CreateLaunchpadForm1 extends React.Component {
                 }),
               ]}
             >
-              <Input
-                className="input-style"
-                placeholder="Enter sale token address"
-              />
+              <Spin
+                spinning={loadTokenDetail}
+                indicator={<LoadingOutlined className="token-loader" />}
+              >
+                <Input
+                  className="input-style"
+                  placeholder="Enter sale token address"
+                />
+              </Spin>
             </Form.Item>
           </div>
           <div>
-            {invalidToken ? (
-              <span
-                className="input-label-sub-head"
-                style={{ color: "#FF483B", fontWeight: 600 }}
-              >
-                <i>*Unable to fetch token details!</i>
-              </span>
-            ) : (
-              <>
+            <>
+              {tokenName && (
                 <Row className="px-2 pb-10">
                   <Col span={12} className="sale-token-detail-lft">
                     Name
@@ -77,11 +70,11 @@ export default class CreateLaunchpadForm1 extends React.Component {
                     Decimals
                   </Col>
                   <Col span={12} className="sale-token-detail-rt">
-                    {decimals}
+                    {tokenDecimals}
                   </Col>
                 </Row>
-              </>
-            )}
+              )}
+            </>
           </div>
         </Col>
       </>

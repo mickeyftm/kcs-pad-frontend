@@ -1,131 +1,46 @@
-import {
-  Col,
-  Dropdown,
-  Form,
-  Input,
-  Menu,
-  Row,
-  Spin,
-  Switch,
-  TimePicker,
-} from "antd";
+import { Col, Form, Input, Row, Switch, TimePicker, Select } from "antd";
 import React from "react";
-import { LoadingOutlined } from "@ant-design/icons";
-import errorOutline from "./../../../assets/icons/error_outline.svg";
-import { getChecksumAddress } from "../../../common/utils/contracts/common-contract-utils";
-
+const { Option } = Select;
 export default class CreateLaunchpadForm2 extends React.Component {
   render() {
-    const {
-      isDropdownMenuVisible,
-      setDropdownVisibility,
-      loadTokenAddress,
-      getCurrencyTokenInfo,
-      handleChange,
-    } = this.props;
-    let { listScatterTokens } = this.props;
-    const isListLength0 = listScatterTokens.length === 0 ? false : true;
-    listScatterTokens = (
-      <Menu
-        onClick={({ key }) => {
-          getCurrencyTokenInfo(key, true);
-          this.setState({ showInputData: true });
-          setDropdownVisibility(isDropdownMenuVisible);
-        }}
-        className="network-info-dropdown width100"
-      >
-        {listScatterTokens.map((item) => {
-          return (
-            <Menu.Item
-              className="scatter__dropdown-list"
-              key={JSON.stringify({
-                tokenAddress: item.tokenAddress,
-                value: item.value,
-              })}
-            >
-              {item.value}
-            </Menu.Item>
-          );
-        })}
-      </Menu>
-    );
+    const { listCurrency, onChangeCurrency, currency, tokenSymbol } =
+      this.props;
     return (
       <>
         <Col>
-          <br />
-          <br />
-          <div className="padT20 marB10">
+          <div>
             <label className="input-label">Token Address</label>
-            <Dropdown
-              overlay={listScatterTokens}
-              disabled={loadTokenAddress}
-              onClick={() => setDropdownVisibility(isDropdownMenuVisible)}
-              visible={
-                isDropdownMenuVisible ? isListLength0 : isDropdownMenuVisible
-              }
-            >
             <Form.Item
               name="currencyTokenAddress"
               rules={[
                 {
                   required: true,
-                  message: "Currency token address cannot be blank!",
+                  message: "Please select currency token address!",
                 },
-                ({ getFieldValue }) => ({
-                  validator(rule, value = "") {
-                    if (value && !getChecksumAddress(value)) {
-                      console.log(value);
-                      console.log(getChecksumAddress(value));
-                      return Promise.reject(`Invalid currency token address!`);
-                      // } else if (value && getSaleTokenAddressDetails(value)) {
-                      //   return Promise.reject(`Unable to get token details!`);
-                    } else {
-                      getCurrencyTokenInfo(value);
-                      return Promise.resolve();
-                    }
-                  },
-                }),
               ]}
             >
-              <Input
-                suffix={
-                  <Spin
-                    spinning={loadTokenAddress}
-                    indicator={
-                      <LoadingOutlined
-                        style={{
-                          fontSize: 24,
-                          float: "right",
-                          color: "#2042a8",
-                        }}
-                      />
-                    }
-                  ></Spin>
-                }
-                allowClear
+              <Select
                 className="input-style"
-                placeholder="Please select or insert your currency token address"
-              />
+                placeholder="Select Gather Currency"
+                onSelect={(event, value) => onChangeCurrency(event, value)}
+              >
+                {listCurrency &&
+                  listCurrency.map((item) => {
+                    const val = [
+                      item.currency_name,
+                      item.currency_contract_address,
+                      item.currency_decimal,
+                    ];
+                    return <Option value={val}>{item.currency_name}</Option>;
+                  })}
+              </Select>
             </Form.Item>
-            </Dropdown>
-            {/* {(rawTokenAddress === "" || invaliAddress) && formInitialized && (
-              <Row className="gd__error-outline marT10">
-                <Col span={2}>
-                  <img src={errorOutline} alt="errorOutline" />
-                </Col>
-                <Col span={22}>
-                  {invaliAddress
-                    ? "Invalid token address"
-                    : "Please input token address!"}
-                </Col>
-              </Row>
-            )} */}
           </div>
           <div>
             <div className="input-label">
-              Presale rate*
+              Presale rate
               <div className="input-label-sub-head">
-                If I spend 1 BNB how many tokens will I receive?
+                If I spend 1 {currency} how many tokens will I receive?
               </div>
             </div>
             <Form.Item
@@ -150,7 +65,6 @@ export default class CreateLaunchpadForm2 extends React.Component {
             >
               <Input
                 className="input-style"
-                onChange={(e) => handleChange(e)}
                 placeholder="Enter Price Per Token"
               />
             </Form.Item>
@@ -183,7 +97,7 @@ export default class CreateLaunchpadForm2 extends React.Component {
           </div> */}
           <div>
             <div className="input-label">
-              Softcap (BNB)*
+              Softcap ({tokenSymbol})
               {/* <div className="input-label-sub-head">
                 Softcap must be >= 50% of Hardcap!
               </div> */}
@@ -211,7 +125,7 @@ export default class CreateLaunchpadForm2 extends React.Component {
           </div>
           <div>
             <div className="input-label">
-              HardCap (BNB)
+              HardCap ({tokenSymbol})
               {/* <div className="input-label-sub-head">
                 Softcap must be >= 50% of Hardcap!
               </div> */}
@@ -239,7 +153,7 @@ export default class CreateLaunchpadForm2 extends React.Component {
           </div>
           <div>
             <div className="input-label">
-              Minimum buy (BNB)*
+              Minimum buy ({currency})
               {/* <div className="input-label-sub-head">
                 Softcap must be >= 50% of Hardcap!
               </div> */}
@@ -269,7 +183,7 @@ export default class CreateLaunchpadForm2 extends React.Component {
           </div>
           <div>
             <div className="input-label">
-              HardCap (BNB)
+              Maximum buy ({currency})
               {/* <div className="input-label-sub-head">
                 Softcap must be >= 50% of Hardcap!
               </div> */}

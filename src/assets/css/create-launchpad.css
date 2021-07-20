@@ -75,10 +75,17 @@
   margin: auto;
 }
 
-.from-step-line {
+.form-step-line {
   width: 150px;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   margin-left: 4px;
+  margin-right: 4px;
+}
+.form-step-line-completed {
+  width: 150px;
+  /* margin-top: 15px; */
+  margin-left: 4px;
+  border-top: 1px solid #1739a4;
   margin-right: 4px;
 }
 
@@ -118,4 +125,9 @@
   line-height: 38px;
   letter-spacing: 0.214866px;
   color: #222944;
+}
+
+.token-loader {
+  font-size: 24px;
+  color: #1739a4;
 }

@@ -8,6 +8,21 @@
   border-color: #6f42c1 !important;
 }
 
+.ant-select-single .ant-select-selector .ant-select-selection-search {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  bottom: 0;
+  left: 11px;
+}
+
+.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  height: 60px !important;
+  background: #f5f6fa;
+  border-radius: 5.5px;
+  border-color: #f5f6fa;
+  padding-top: 15px;
+}
 .ant-btn-secondary {
   color: #fff;
   background-color: #1639a4 !important;
