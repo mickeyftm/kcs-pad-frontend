@@ -1,0 +1,22 @@
+.ant-btn-secondary:hover {
+  color: #fff;
+  background: #6f42c1 !important;
+  border-color: #6f42c1 !important;
+}
+
+.ant-btn-secondary:focus {
+  border-color: #6f42c1 !important;
+}
+
+.ant-btn-secondary {
+  color: #fff;
+  background-color: #1639a4 !important;
+  height: 60px !important;
+  width: 100% !important;
+  border-radius: 6px !important;
+  border-color: #1639a4;
+}
+
+.ant-input {
+  background-color: #f5f6fa !important;
+}

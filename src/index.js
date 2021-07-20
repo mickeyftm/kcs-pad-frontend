@@ -4,6 +4,7 @@ import Favicon from "react-favicon";
 import favicon from "./assets/favicon.png";
 import App from "./app/App";
 import "./index.css";
+import "././assets/css/override-antd.css";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(

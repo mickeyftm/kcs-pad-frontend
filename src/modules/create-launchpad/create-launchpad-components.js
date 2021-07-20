@@ -6,15 +6,163 @@ import stepPending from "./../../assets/icons/step-pending.png";
 import CreateLaunchpadForm1 from "./widgets/create-launchpad-form1";
 import CreateLaunchpadForm2 from "./widgets/create-launchpad-form2";
 import CreateLaunchpadForm3 from "./widgets/create-launchpad-form3";
+import {
+  getChecksumAddress,
+  getERC20TokenContract,
+} from "../../common/utils/contracts/common-contract-utils";
+import moment from "moment";
+import {
+  EMPTY_ADDRESS,
+  NATIVE_CURRENCY_NAME,
+} from "../../common/constants/CONTRACT_CONSTANTS";
 class CreateLaunchpadComponents extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      decimals: 0,
+      tokenSymbol: "",
+      tokenName: "",
+      invalidToken: true,
+      rawTokenAddress: "",
+      validInputtedTokenAddress: "",
+      isDropdownMenuVisible: false,
+      invaliAddress: false,
+      loadTokenAddress: false,
+      formInitialized: false,
+    };
+    this.formRef = React.createRef();
+  }
+  setDropdownVisibility = (isDropdownMenuVisible) => {
+    this.setState({ isDropdownMenuVisible: !isDropdownMenuVisible });
+  };
+  async getCurrencyTokenInfo(currencyTokenAddress, isDropdown) {
+    if (!isDropdown) {
+      const { filterTokenDropdownList } = this.props;
+      filterTokenDropdownList(currencyTokenAddress);
+      const walletConnector = localStorage.getItem("walletConnector");
+      const { networkId } = this.props;
+      let tokenName = "";
+      let tokenSymbol = "";
+      if (currencyTokenAddress !== EMPTY_ADDRESS) {
+        this.setState({ loadTokenAddress: true });
+        try {
+          const tokenContract = getERC20TokenContract(currencyTokenAddress, {
+            isReadOnly: true,
+            networkId,
+            walletConnector,
+          });
+          tokenName = await tokenContract.name();
+          tokenSymbol = await tokenContract.symbol();
+          this.formRef.current.setFieldsValue({
+            currencyTokenAddress: `${tokenName} (${tokenSymbol}) - ${currencyTokenAddress}`,
+          });
+          this.setState({
+            loadTokenAddress: false,
+          });
+        } catch (error) {
+          this.formRef.current.setFields([
+            {
+              name: "currencyTokenAddress",
+              errors: ["Unable to fetch contract details"],
+            },
+          ]);
+          this.setState({ loadTokenAddress: false });
+        }
+      } else {
+        this.formRef.current.setFields([
+          {
+            name: "currencyTokenAddress",
+            errors: "",
+          },
+        ]);
+        this.formRef.current.setFieldsValue({
+          currencyTokenAddress: `${NATIVE_CURRENCY_NAME[networkId]} - Mainnet Native Currency`,
+        });
+      }
+    } else {
+      const obj = JSON.parse(currencyTokenAddress);
+      this.formRef.current.setFieldsValue({
+        currencyTokenAddress: obj.value,
+      });
+    }
+  }
+  changeSaleTokenInvalidState = () => {
+    this.setState({
+      invalidToken: true,
+    });
+  };
+  handleChange = (e) => {
+    console.log(e);
+    // this.formRef.current.resetFields();
+  };
   render() {
-    const { currentStep, goToStep, createLaunchpad } = this.props;
+    const getSaleTokenAddressDetails = async (saleTokenAddress) => {
+      const { walletConnector, networkId } = this.props;
+      try {
+        const tokenContract = getERC20TokenContract(saleTokenAddress, {
+          walletConnector,
+          isReadOnly: true,
+          networkId,
+        });
+        const decimals = await tokenContract.decimals();
+        const tokenName = await tokenContract.name();
+        const tokenSymbol = await tokenContract.symbol();
+        this.setState({
+          tokenName,
+          tokenSymbol,
+          decimals,
+          invalidToken: false,
+        });
+        return false;
+      } catch {
+        this.setState({
+          invalidToken: true,
+        });
+        return true;
+      }
+    };
+    const { currentStep, goToStep, createLaunchpad, listScatterTokens } =
+      this.props;
+    const {
+      tokenSymbol,
+      decimals,
+      tokenName,
+      invalidToken,
+      invaliAddress,
+      loadTokenAddress,
+      formInitialized,
+      isDropdownMenuVisible,
+    } = this.state;
     const steps = [
       {
-        content: <CreateLaunchpadForm1 />,
+        content: (
+          <CreateLaunchpadForm1
+            decimals={decimals}
+            tokenSymbol={tokenSymbol}
+            tokenName={tokenName}
+            invalidToken={invalidToken}
+            changeSaleTokenInvalidState={this.changeSaleTokenInvalidState}
+            getSaleTokenAddressDetails={(saleTokenAddress) =>
+              getSaleTokenAddressDetails(saleTokenAddress)
+            }
+          />
+        ),
       },
       {
-        content: <CreateLaunchpadForm2 />,
+        content: (
+          <CreateLaunchpadForm2
+            isDropdownMenuVisible={isDropdownMenuVisible}
+            setDropdownVisibility={this.setDropdownVisibility}
+            invaliAddress={invaliAddress}
+            loadTokenAddress={loadTokenAddress}
+            formInitialized={formInitialized}
+            listScatterTokens={listScatterTokens}
+            handleChange={this.handleChange}
+            getCurrencyTokenInfo={(currencyTokenAddress, isDropdown) =>
+              this.getCurrencyTokenInfo(currencyTokenAddress, isDropdown)
+            }
+          />
+        ),
       },
       {
         content: <CreateLaunchpadForm3 />,
@@ -30,7 +178,7 @@ class CreateLaunchpadComponents extends React.Component {
               : { paddingBottom: 50 }
           }
         >
-          <div className="create-gather-txt">Create Launchpad </div>
+          <div className="create-launchpad-txt">Create Launchpad </div>
           <div className="form-steps">
             <div className="row">
               <div className="float-left col padding0">
@@ -160,7 +308,23 @@ class CreateLaunchpadComponents extends React.Component {
             <Form
               name="startGatherForm"
               id="startGatherForm"
-              initialValues={{}}
+              ref={this.formRef}
+              initialValues={{
+                saleTokenAddress: "0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
+                currencyTokenAddress:
+                  "0x47Ddd1dACC9340668102Efe30f55f4E01566fC89",
+                softCap: "1",
+                hardCap: "10",
+                minPurchaseLimit: "2",
+                maxPurchaseLimit: "4",
+                pricePerToken: "10",
+                whitelistingStatus: true,
+                saleFeePercentage: "2",
+                startAfter: 0,
+                startAfterTime: moment("00:04:00", "HH:mm:ss"),
+                runningPeriod: 0,
+                runningPeriodTime: moment("00:04:00", "HH:mm:ss"),
+              }}
               onFinish={createLaunchpad}
             >
               <DjangoCSRFToken />

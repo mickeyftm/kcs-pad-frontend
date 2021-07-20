@@ -88,3 +88,34 @@
     padding-right: 10%;
   }
 }
+
+.sale-token-detail-lft {
+  /* font-family: SFProText; */
+  font-size: 13px;
+  line-height: 19px;
+  letter-spacing: -0.173333px;
+  text-transform: uppercase;
+  padding-top: 10px;
+  color: #9796b1;
+}
+.sale-token-detail-rt {
+  /* font-family: SFProText; */
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  line-height: 19px;
+  letter-spacing: -0.173333px;
+  text-transform: uppercase;
+  padding-top: 10px;
+  color: #000000;
+}
+
+.create-launchpad-txt {
+  /* font-family: Avenir; */
+  /* font-style: normal; */
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 38px;
+  letter-spacing: 0.214866px;
+  color: #222944;
+}
